@@ -11,8 +11,8 @@ You will only need Node.js and a node global package, Yarn, installed in your en
 
 ## Install
 
-    $ git clone https://github.com/YOUR_USERNAME/PROJECT_TITLE
-    $ cd PROJECT_TITLE
+    $ git clone https://github.com/pradeep-kr27/wander-sphere.git
+    $ cd wander-sphere
     $ yarn install
 
 ## Running the project
