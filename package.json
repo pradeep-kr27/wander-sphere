@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/pradeep-kr27/wander-sphere/issues"
   },
-  "homepage": "https://github.com/pradeep-kr27/wander-sphere#readme"
+  "homepage": "https://github.com/pradeep-kr27/wander-sphere#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
