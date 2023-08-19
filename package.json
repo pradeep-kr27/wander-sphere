@@ -1,0 +1,19 @@
+{
+  "name": "wander-sphere",
+  "version": "1.0.0",
+  "description": "A platform for secure and efficient travel booking and browsing.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pradeep-kr27/wander-sphere.git"
+  },
+  "author": "Pradeep K R",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pradeep-kr27/wander-sphere/issues"
+  },
+  "homepage": "https://github.com/pradeep-kr27/wander-sphere#readme"
+}
