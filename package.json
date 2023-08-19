@@ -2,7 +2,7 @@
   "name": "wander-sphere",
   "version": "1.0.0",
   "description": "A platform for secure and efficient travel booking and browsing.",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
