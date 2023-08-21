@@ -1,1 +1,4 @@
 node_modules
+sa-key.json
+.env
+dist

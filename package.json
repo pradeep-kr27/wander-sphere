@@ -2,9 +2,11 @@
   "name": "wander-sphere",
   "version": "1.0.0",
   "description": "A platform for secure and efficient travel booking and browsing.",
-  "main": "server.js",
+  "main": "server.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx tsc && node dist/src/index.js",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -17,7 +19,17 @@
   },
   "homepage": "https://github.com/pradeep-kr27/wander-sphere#readme",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "firebase": "^10.2.0",
     "firebase-admin": "^11.10.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.13",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
   }
 }
