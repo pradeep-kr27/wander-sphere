@@ -7,6 +7,6 @@ const router = express.Router();
 
 // Define Admin routes
 router.get('/pending-property-owners', isAuthenticated, isAuthorized({ hasRole: ['admin'] }), getPendingPropertyOwners);
-router.put('/approve-property-owner/:ownerId', approvePropertyOwner);
+router.put('/approve-property-owner/:ownerId', isAuthenticated, isAuthorized({ hasRole: ['admin'] }), approvePropertyOwner);
 
 export default router;
