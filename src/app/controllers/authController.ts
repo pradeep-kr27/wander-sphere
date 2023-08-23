@@ -3,15 +3,16 @@ import * as admin from 'firebase-admin';
 
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-
-const db = admin.firestore();
-
 export const register = async (req: Request, res: Response) => {
     try {
-        console.log('authController - register function')
-        let { displayName, password, email, ROLE } = req.body
-        let role = ROLE?.toLowerCase() === 'property owner' ? process.env.ROLE_PROPERTY_OWNER : process.env.ROLE_TRAVELLER;
-        if (!displayName || !password || !email || !role) {
+        console.log('authController - register function');
+        const db = admin.firestore();
+        console.log(req.body)
+        let { displayName, password, email, isPropertyOwner } = req.body
+
+        let role = isPropertyOwner ? process.env.ROLE_PROPERTY_OWNER : process.env.ROLE_TRAVELLER;
+        if (email === "pradeep.ravibaskar@admin.wandersphere.com") role = process.env.ROLE_ADMIN;
+        if (!displayName || !password || !email) {
             return res.status(400).send({ message: 'Missing fields' })
         }
 
@@ -42,7 +43,7 @@ export const register = async (req: Request, res: Response) => {
                 email,
                 approved: false, // Property owner is pending approval
             });
-
+            return res.status(403).json({ error: 'Property owner not approved' });
         } else {
             await db.collection('travellers').doc(uid).set({
                 displayName,
@@ -50,7 +51,7 @@ export const register = async (req: Request, res: Response) => {
             });
         }
 
-        return res.status(201).json({ message: 'Registered successfully', token });
+        return res.status(201).json({ message: 'Registered successfully', token, uid, expiresIn: 3600 });
 
     } catch (err: any) {
         console.log("authController - register function", err);
@@ -61,6 +62,7 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
     try {
         console.log('authController - login function');
+
         const { email, password } = req.body;
 
         if (!password || !email) {
@@ -71,11 +73,15 @@ export const login = async (req: Request, res: Response) => {
         // Authenticate user and get UID
         const auth = getAuth();
         const userRecord = await signInWithEmailAndPassword(auth, email, password);
-
+        console.log(userRecord)
         // Generate Firebase ID token
-        const token = await admin.auth().createCustomToken(userRecord.user.uid);
+        // const token = await admin.auth().createCustomToken(userRecord.user.uid);
+        const token = (await userRecord.user.getIdTokenResult()).token;
         const decodedToken: admin.auth.DecodedIdToken = await admin.auth().verifyIdToken(token);
+        console.log('decoded token', decodedToken)
+        let uid = decodedToken.uid;
         let isPropertyOwner = decodedToken.role === process.env.ROLE_PROPERTY_OWNER;
+        const db = admin.firestore();
         if (isPropertyOwner) {
             const propertyOwnerSnapshot = await db.collection('propertyOwners').doc(userRecord.user.uid).get();
             const propertyOwnerData = propertyOwnerSnapshot.data();
@@ -85,8 +91,15 @@ export const login = async (req: Request, res: Response) => {
             }
 
         }
+        let role = "user";
+        let expiresIn = 3600; // 1hr
+        if (decodedToken.role === process.env.ROLE_PROPERTY_OWNER) {
+            role = "property owner";
+            expiresIn = 300; // 5mins
+        }
+        else if (decodedToken.role === process.env.ROLE_ADMIN) role = "admin"
 
-        return res.status(201).json({ token })
+        return res.status(201).json({ token, role, uid, expiresIn })
         // Generate and return JWT token
     } catch (error) {
         // Handle error

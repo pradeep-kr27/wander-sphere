@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import * as admin from 'firebase-admin'
 
 export async function isAuthenticated(req: Request, res: Response, next: Function) {
+console.log('--- isAuthenticated Middleware ---')
    const { authorization } = req.headers
 
    if (!authorization)
@@ -23,7 +24,8 @@ export async function isAuthenticated(req: Request, res: Response, next: Functio
        return next();
    }
    catch (err: any) {
-       console.error(`${err.code} -  ${err.message}`)
-       return res.status(401).send({ message: 'Unauthorized' });
+       console.log('error in isAuthenticated Middleware', err);
+       if(err && err.errorInfo && err.errorInfo.code==="auth/id-token-expired") return res.status(401).json({message: "token expired"})
+       return res.status(500).json({ err });
    }
 }

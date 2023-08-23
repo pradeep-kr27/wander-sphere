@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
 import * as admin from 'firebase-admin';
 
-const db = admin.firestore();
+
 
 
 // Get list of pending property owners for approval
 export const getPendingPropertyOwners = async (req: Request, res: Response) => {
     try {
+        const db = admin.firestore();
         // Retrieve property owners pending approval from Firestore
         const pendingPropertyOwnersSnapshot = await db.collection('propertyOwners').where('approved', '==', false).get();
         const pendingPropertyOwners = pendingPropertyOwnersSnapshot.docs.map(doc => ({
@@ -23,6 +24,7 @@ export const getPendingPropertyOwners = async (req: Request, res: Response) => {
 // Approve a property owner
 export const approvePropertyOwner = async (req: Request, res: Response) => {
     try {
+        const db = admin.firestore();
         const { ownerId } = req.params;
 
         // Update the property owner's approval status in Firestore

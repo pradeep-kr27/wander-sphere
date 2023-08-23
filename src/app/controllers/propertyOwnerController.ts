@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import * as admin from 'firebase-admin';
-
-const db = admin.firestore();
+import PropertyOwnerModel from "../models/propertyOwnerModel";
 
 // Property Owner login (after approval)
 
@@ -9,18 +8,15 @@ const db = admin.firestore();
 export const postTravelCatalogue = async (req: Request, res: Response) => {
     try {
         const { uid, title, description, images } = req.body;
-
+        const db = admin.firestore();
 
         // Save travel catalogue in Firestore
-        await db.collection('catalogues').add({
-            title,
-            description,
-            images,
-            ownerId: uid,
-        });
+        const propertyOwnerModel = new PropertyOwnerModel(uid,"","");
+        await propertyOwnerModel.postCatalogues(title, description, images)
 
         res.status(201).json({ message: 'Travel catalogue posted successfully' });
     } catch (error) {
+        console.log('propertyOwner Controller - postTravelCatalogue - error: ', error);
         res.status(500).json({ error: 'Failed to post travel catalogue' });
     }
 };

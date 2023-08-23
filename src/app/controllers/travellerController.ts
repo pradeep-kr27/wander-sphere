@@ -1,19 +1,19 @@
 import * as admin from 'firebase-admin';
 import { Request, Response } from 'express';
-
-const db = admin.firestore();
+import TravellerModel from "../models/travellerModel";
 
 // Retrieve bookings for a Traveller
 export const getTravellerBookings = async (req: Request, res: Response) => {
     try {
-        const uid = req.params.uid; // Assuming you pass UID as a parameter
-
+        // const db = admin.firestore();
+        const uid = req.params.id; // Assuming you pass UID as a parameter
+        const traveller = new TravellerModel(uid, '', ''); // Initialize with required fields
         // Retrieve bookings for the Traveller from Firestore
-        const bookingsSnapshot = await db.collection('bookings').where('travellerUid', '==', uid).get();
-        const bookings = bookingsSnapshot.docs.map(doc => doc.data());
+        const bookings = await traveller.getBookings()
 
         res.status(200).json(bookings);
     } catch (error) {
+        console.log('Traveller Controller - getTravellerBookings - error: ', error)
         res.status(500).json({ error: 'Failed to get traveller bookings' });
     }
 };
@@ -22,11 +22,14 @@ export const getTravellerBookings = async (req: Request, res: Response) => {
 export const exploreTravelCatalogues = async (req: Request, res: Response) => {
     try {
         // Retrieve travel catalogues from Firestore
-        const cataloguesSnapshot = await db.collection('catalogues').get();
-        const catalogues = cataloguesSnapshot.docs.map(doc => doc.data());
+        // const db = admin.firestore();
+        
+        const traveller = new TravellerModel('', '', ''); // Initialize with required fields
+        const catalogues = await traveller.exploreCatalogues();
 
         res.status(200).json(catalogues);
     } catch (error) {
+        console.log('Traveller Controller - getTravellerBookings - error: ', error)
         res.status(500).json({ error: 'Failed to explore travel catalogues' });
     }
 };

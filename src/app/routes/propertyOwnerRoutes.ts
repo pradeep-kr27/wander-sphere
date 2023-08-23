@@ -7,6 +7,6 @@ const router = express.Router();
 
 // Define Property Owner routes
 
-router.post('/catalogue', isAuthenticated, isAuthorized({ hasRole: ['property_owner'] }), postTravelCatalogue);
+router.post('/catalogue', isAuthenticated, isAuthorized({ hasRole: ['property_owner','admin'] }), postTravelCatalogue);
 
 export default router;

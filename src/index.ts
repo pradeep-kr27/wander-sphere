@@ -10,7 +10,11 @@ import { config } from 'dotenv';
 import serviceAccount from "../sa-key.json";
 import travellerRoutes from './app/routes/travellerRoutes';
 import adminRoutes from './app/routes/adminRoutes';
+import { initializeApp } from "firebase/app";
+import propertyOwnerRoutes from './app/routes/propertyOwnerRoutes';
+import { environment } from './environments/environment';
 
+initializeApp(environment.firebaseConfig);
 config();
 
 admin.initializeApp({
@@ -29,6 +33,7 @@ app.get('/', (req, res) => {
 authRoutes(app)
 app.use('/travellers', travellerRoutes);
 app.use('/admin', adminRoutes); // Adding Admin routes
+app.use('/property-owner', propertyOwnerRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

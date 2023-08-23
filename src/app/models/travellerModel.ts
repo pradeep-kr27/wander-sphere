@@ -1,7 +1,5 @@
 import * as admin from 'firebase-admin';
 
-const db = admin.firestore();
-
 class TravellerModel {
   constructor(public uid: string, public name: string, public email: string) {
     // ...other fields specific to Traveller
@@ -9,11 +7,9 @@ class TravellerModel {
 
   async getBookings() {
     try {
-      const bookingsSnapshot = await db.collection('travellers').doc(this.uid).collection('bookings').get();
-      const bookings: any[] = [];
-      bookingsSnapshot.forEach((bookingDoc) => {
-        bookings.push(bookingDoc.data());
-      });
+      const db = admin.firestore();
+      const bookingsSnapshot = await db.collection('bookings').where('travellerUid', '==', this.uid).get();
+      const bookings = bookingsSnapshot.docs.map(doc => doc.data());
       return bookings;
     } catch (error: any) {
       throw new Error('Error fetching bookings: ' + error.message);
@@ -22,11 +18,9 @@ class TravellerModel {
 
   async exploreCatalogues() {
     try {
-      const cataloguesSnapshot = await db.collection('propertyOwners').get();
-      const catalogues: any[] = [];
-      cataloguesSnapshot.forEach((propertyOwnerDoc) => {
-        catalogues.push(propertyOwnerDoc.data());
-      });
+      const db = admin.firestore();
+      const cataloguesSnapshot = await db.collection('catalogues').get();
+      const catalogues = cataloguesSnapshot.docs.map(doc => doc.data());
       return catalogues;
     } catch (error: any) {
       throw new Error('Error exploring catalogues: ' + error.message);
